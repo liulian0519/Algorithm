@@ -1,0 +1,59 @@
+/*ÊäÈë-1Ê±Í£Ö¹*/
+#include<stdio.h> 
+#include<malloc.h>
+typedef struct node{
+	int data;
+	struct node *next;
+}LNode,*Linklist;
+
+Linklist creat_Linklist(){
+	Linklist L=(Linklist)malloc(sizeof(LNode));
+	L->next = NULL;
+	LNode *s ,*r=L;
+	int x;
+	scanf("%d",&x);
+	while(x!=-1){
+		s=(Linklist)malloc(sizeof(LNode));
+		s->data=x;
+		s->next =r->next;
+		r->next=s;
+		r=s;
+		scanf("%d",&x);
+	} 
+	return L;
+}
+Linklist chaifen_Linklist(Linklist L){
+	LNode *p,*q,*t;
+	t=p=L->next;
+	q=p->next;  
+	while(q != NULL ){
+		if(p->data < q->data){
+			t=q;
+			q=q->next ;
+		}
+		else {
+			t->next=q->next;
+			q->next=L->next;
+			L->next=q;
+			q=t->next;
+		}
+	}
+	return L;
+}
+
+void output (Linklist L){
+	Linklist p;
+	p=L->next;
+	while(p!=NULL){
+		printf("%4d",p->data);
+		p=p->next ;
+	}
+}
+
+main(){
+	Linklist L;
+	L=creat_Linklist();
+	chaifen_Linklist(L);
+	output(L);
+
+}

@@ -1,0 +1,66 @@
+/*
+依据先序中序建立二叉树 
+pref 先序序列第一个元素下标
+pree  先序序列最后一个元素下标
+inf   中序序列第一个元素下标
+ine   中序序列最后一个元素下表
+*/ 
+
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+typedef struct Node
+{
+	char data;
+	struct Node *lchild;
+	struct Node *rchild;
+}bitNode,*bitree;
+char prearray[51];
+char inarray[51];
+void preincreat(bitree &root,int pref,int pree,int inf,int ine)
+{
+	int rootindex;//先序序列中第一个 
+	int i;
+	root=(bitree)malloc(sizeof(bitNode));
+	root->data=prearray[pref];
+	for(i=inf;i<=ine;i++)
+	{
+		if(root->data==inarray[i])
+		{
+			rootindex=i;
+			break;
+		}
+	}
+	if(rootindex!=inf)
+		preincreat(root->lchild,pref+1,(rootindex-inf)+pref,inf,rootindex-1);
+	else
+		root->lchild=NULL;
+	if(rootindex!=ine)
+		preincreat(root->rchild,pref+1+(rootindex-inf),pree,rootindex+1,ine);
+	else
+		root->rchild=NULL;
+	
+}
+void postorder(bitree root)		//后序输出 
+{
+	if(root)
+	{
+		
+		postorder(root->lchild);
+		postorder(root->rchild);
+		printf("%c",root->data);
+	}
+}
+main()
+{
+	while(scanf("%s",prearray)!=EOF)
+	{
+		bitree root;
+		scanf("%s",inarray);
+		preincreat(root,0,strlen(prearray)-1,0,strlen(inarray)-1);
+		postorder(root);
+		//printf("\n");
+	}
+	return 0;
+}
+ 

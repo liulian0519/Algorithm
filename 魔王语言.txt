@@ -1,0 +1,112 @@
+/* 实现过程：
+初始魔王语言接收后存放于lan[i] 
+第一次遍历数组将括号内的元素从左至右入栈
+战中栈顶元素出栈依次chuli
+*/ 
+
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+#include<malloc.h>
+#define stackinitsize 100
+#define stsckincreament 10
+typedef struct
+{
+	char *base;
+	char *top;
+	int stacksize;
+}seqstack;
+int init(seqstack *s)//初始化 
+{
+	s->base=(char *)malloc(stackinitsize*sizeof(char));
+	if(!s->base)
+		exit -1;
+	s->top=s->base;
+	s->stacksize=stackinitsize;
+	return 1;
+	
+}
+int pop(seqstack *s,char *e)//删除栈顶元素并用e返回 
+{
+	if(s->top == s->base) return 0;
+	*e=*(--(s->top));
+	return *e;
+}
+int push(seqstack *s,char e)//插入栈顶元素 
+{
+	if(s->top-s->base>=s->stacksize)
+	{
+		s->base=(char *)realloc(s->base,(s->stacksize+stsckincreament)*sizeof(char));
+		if(!s->base)
+			exit -1;
+		s->top=s->base+s->stacksize;
+		s->stacksize+=stsckincreament;
+	}
+	*s->top++=e;
+	return 1;
+	
+}
+int main()
+{
+	seqstack s;
+	init(&s);
+	char a[10010],b[10010],lan[10010],f[10010],d[10010];
+	char c1,c2,c3;
+	printf("请输入规则一\n");
+	scanf("%c->%s",&c1,a);
+	getchar();
+	scanf("%c->%s",&c2,b);
+	getchar();
+	int lena=strlen(a);
+	int lenb=strlen(b);
+	int flen=0;
+	for(int i=0;i<lena;i++)
+	{
+		if(a[i]==c2)
+			for(int j=0;j<lenb;j++)
+				f[flen++]=b[j];
+		else if(a[i]!=c2)
+			f[flen++]=a[i];
+	}
+	printf("请输入魔王语言\n");
+	gets(lan);
+	int lenlan=strlen(lan);
+	for(int i=lenlan-1;i>=0;i--)
+	{
+		push(&s,lan[i]);
+	}
+	char e;
+	int flag = 0;
+	int dlen=0;
+	for(int i=0;i<lenlan;i++)
+	{
+		pop(&s,&e);
+		if(flag==1)
+		{
+			d[dlen++]=e;
+		}
+		if(e==c1&&flag==0)	printf("%s",f);
+		else if(e==c2&&flag==0) printf("%s",b);
+		else if(e=='('&&flag==0)
+		{
+			c3=lan[i+1];
+			flag=1;
+		}
+		else if(e==')')
+		{
+			flag = 0;
+			for(int j=dlen-2;j>=0;j--)
+			{
+				if(j)
+					printf("%c%c",c3,d[j]);
+				else
+					printf("%c",d[j]);	
+			}
+		}
+		else if(flag!=1)
+			printf("%c",e);
+		
+	}
+	putchar('\n');
+	return 0;
+}

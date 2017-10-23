@@ -1,0 +1,55 @@
+#include<stdio.h>
+#include<stdlib.h>
+#define MAXSIZE 100
+typedef struct Node
+{
+	char data;
+	struct Node *lchild;
+	struct Node *rchild;
+}bitNode,*bitree;
+bitree creat()	//创建 
+{
+	char ch;
+	bitNode *s;
+	ch=getchar();
+	if(ch=='#')
+		return NULL;
+	else
+		{
+			s=(bitNode *)malloc(sizeof(bitNode));
+			s->data=ch;
+			s->lchild=creat();
+			s->rchild=creat();
+			return s;
+		}
+}
+void lbpath(bitree bt,char path[],int pathlen)			//输出从根节点到叶子节点的路径 
+{
+	int i;
+	if(bt!=NULL)
+	{
+		if(bt->lchild==NULL&&bt->rchild==NULL)
+		{
+			printf("%c:",bt->data);
+			for(i=0;i<=pathlen-1;i++)
+				printf("%c",path[i]);
+			printf("\n"); 
+		}
+		else
+		{
+			
+			path[pathlen]=bt->data;
+			lbpath(bt->lchild,path,pathlen+1);
+			lbpath(bt->rchild,path,pathlen+1);
+		}
+	} 
+}
+
+
+main()
+{
+	bitree root;
+	root=creat();
+	char path[MAXSIZE];
+	lbpath(root,path,0);
+}

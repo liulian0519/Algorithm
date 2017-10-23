@@ -1,0 +1,109 @@
+/*
+编号为1，2，…，n的n个人按顺时针方向围坐在一张圆桌周围。给定一个正整数m≤n，从第一个人 
+
+开始按顺时针方向自1开始报数，每报到m时就让其出列，从他顺时针方向的下一个人开始重新从1报数，数到m的 
+
+那个人又出列。如此下去，直至圆桌周围的人全部出列为止。每个人的出列次序定义了整数1，2，3，…，n的一 
+
+个排列。这个排列称为一个（n,m）Josephus排列。例如：（7，3）Josephus排列为3，6，2，7，5，1，4。 
+
+输入
+
+输入两个整数，人数n和密码m，以空格间隔。
+
+输出
+
+按出列次序输出每个人的编号，以空格间隔。
+
+样例输入
+7 3*/
+
+#include<stdio.h>
+#include<stdlib.h>
+#define MAX 100
+
+typedef struct NodeType
+{
+	int id;
+	int password;
+	struct NodeType *next;
+}NodeType;
+NodeType *GetNode(int n,int m)
+{
+	NodeType *pNew=NULL;
+	pNew=(NodeType *)malloc(sizeof(NodeType));
+	if(!pNew)
+		exit(-1);
+//	for(i=1;i<n;i++)
+	pNew->id=n;
+	pNew->password=m;
+	pNew->next=NULL;
+	return pNew;
+}
+
+void Creatlist(NodeType **ppHead,int n)
+{
+	int i=0;
+	int m;
+	NodeType *pNew=NULL;
+	NodeType *pCur=NULL;
+	for(i=1;i<=n;i++)
+	{
+
+		pNew=GetNode(i,m);
+		if(*ppHead==NULL)
+		{
+			*ppHead=pCur=pNew;
+			pCur->next=*ppHead;
+		}
+		else
+		{
+			pNew->next=pCur->next;
+			pCur->next=pNew;
+			pCur=pNew;
+		}
+	}
+	
+} 
+
+void operate(NodeType **ppHead,int ipassword)
+{
+	int icounter=0;
+	int iflag=1;
+	NodeType *pPrv=NULL;
+	NodeType *pCur=NULL;
+	NodeType *pDel=NULL;
+	pPrv=pCur=*ppHead;
+	while(pPrv->next!=*ppHead)
+		pPrv=pPrv->next;
+	while(iflag)
+	{
+		for(icounter=1;icounter<ipassword;icounter++)
+		{
+			pPrv=pCur;
+			pCur=pCur->next;
+		}
+		if(pPrv==pCur)
+		iflag=0;
+		pDel=pCur;
+		pPrv->next=pCur->next;
+		pCur=pCur->next;
+	//	ipassword=pDel->password;
+		printf("%d ",pDel->id);
+		free(pDel);
+	}
+	*ppHead=NULL;
+	getchar();
+}
+main()
+{
+	int n=0;
+	int m=0;
+	NodeType *pHead = NULL;
+	do{
+		scanf("%d %d",&n,&m);
+	}while(n>MAX);
+	Creatlist(&pHead,n);
+	operate(&pHead,m);
+
+}

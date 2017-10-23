@@ -1,0 +1,118 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<math.h>
+
+typedef struct Polynomial{
+	int coef;		
+	int expn;
+	struct Polynomial *next;
+
+}Polyn;
+Polyn *Create(int n)
+{
+	Polyn *head,*p,*s ;
+	int e,c;
+	char s1,s2;
+	head=(Polyn *)malloc(sizeof(Polyn));
+	head->next=NULL;
+	s=head;
+	getchar();
+	for(int i=0;i<n;i++){
+		p=(Polyn *)malloc(sizeof(Polyn));
+		scanf("%c%d,%d%c",&s1,&c,&e,&s2);
+		p->coef=c;
+		p->expn=e;
+		s->next=p;
+		s=p;
+	}
+	p->next=NULL;
+	return(head);
+}
+Polyn *AddPolyn(Polyn *pa,Polyn *pb){
+	Polyn *qa=pa->next;
+	Polyn *qb=pb->next;
+	Polyn *headc,*pc,*qc;
+	pc=(Polyn *)malloc(sizeof(struct Polynomial));
+	pc->next=NULL;
+	headc=pc;
+	while(qa!=NULL && qb!=NULL){
+		qc=(Polyn *)malloc(sizeof(struct Polynomial));
+		if(qa->expn < qb->expn)
+		{
+			qc->coef = qa->coef;
+			qc->expn = qa->expn;
+			qa=qa->next;			
+		}
+		else if(qa->expn == qb->expn){
+			qc->coef = qa->coef + qb->coef;
+			qc->expn = qa->expn;
+			qa=qa->next;
+			qb=qb->next; 
+		}
+		else{
+			qc->coef = qb->coef;
+			qc->expn = qb->expn;
+			qb=qb->next;
+		}
+		if(qc->coef!=0){
+			qc->next= pc->next;
+			pc->next=qc;
+			pc=qc; 
+		}
+		else free(qc);
+	}
+	while(qa!=NULL){
+		qc=(Polyn *)malloc(sizeof(struct Polynomial));
+		qc->coef=qa->coef;
+		qc->expn=qa->expn;
+		qa=qa->next;
+		qc->next=pc->next;
+		pc->next=qc;
+		pc=qc; 
+	}
+	while(qb!=NULL){
+		qc=(Polyn *)malloc(sizeof(struct Polynomial));
+		qc->coef=qb->coef;
+		qc->expn=qb->expn;
+		qb=qb->next;
+		qc->next=pc->next;
+		pc->next=qc;
+		pc=qc; 
+	}
+	return headc;
+} 
+void PrintPolyn(Polyn *head){
+	Polyn *q=head->next;
+	int n;
+	for(int i=0;i<n;i++){
+		if(q->expn==0){
+			printf("%d",q->coef);
+		}
+		else if(q->expn==1){
+			printf("%dX", q->coef);
+		}
+		else{
+			printf("%dX^%d",q->coef,q->expn );
+		}
+		q=q->next;
+		if(q!=NULL){
+			if(q->coef>0){
+				printf("+");
+			}
+		}
+	}
+	
+}
+main(){
+	Polyn *pa,*pb,*pc;
+	int m;
+	int n;
+	scanf("%d",&m);
+	scanf("%d",&n);
+	pa=Create(n);
+	pb=Create(m);
+	pc=AddPolyn(pa,pb);
+	PrintPolyn(pc);
+	
+	
+}

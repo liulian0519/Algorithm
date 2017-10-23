@@ -1,0 +1,115 @@
+/*计算指定某一层的叶子节点的个数*/
+
+#include<stdio.h>
+#include<stdlib.h>
+#define MAXSIZE 100
+#define true 1
+#define false 0
+typedef struct Node
+{
+	char data;
+	int level;
+	struct Node *lchild;
+	struct Node *rchild;
+	
+}bitNode,*bitree;
+typedef bitNode *ElemType;
+typedef struct 
+{
+	ElemType elem[MAXSIZE];
+	int front;
+	int rear;
+}SeqQueue;
+void initQueue(SeqQueue *q)
+{
+	q->front = 0;
+	q->rear = 0;
+}
+int IsEmpty(SeqQueue *q)
+{
+	if(q->front == q->rear)
+		return true;
+	return false;
+}
+int EnQueue(SeqQueue *q,ElemType x)  
+{
+	if((q->rear+1)%MAXSIZE==q->front)
+		return false;
+	else
+	{	
+		q->elem[q->rear]=x;
+		q->rear=(q->rear+1)%MAXSIZE;
+		return true;
+	} 
+
+}
+int deQueue(SeqQueue *q,ElemType *e)
+{
+	if(q->front == q->rear)
+		return false;
+	*e = q->elem[q->front];
+	q->front = (q->front+1)%MAXSIZE;
+	return true;
+
+}
+bitree creat()	//创建 
+{
+	char ch;
+	bitNode *s;
+	ch=getchar();
+	if(ch=='#')
+		return NULL;
+	else
+		{
+			s=(bitNode *)malloc(sizeof(bitNode));
+			s->data=ch;
+			s->lchild=creat();
+			s->rchild=creat();
+			return s;
+		}
+}
+int treelevelleaf(bitree bt,int k)
+{
+	SeqQueue Q;
+	bitNode *p;
+	int n=0;
+	if(k<=0)
+		return 0;
+	initQueue(&Q);
+	p=bt;
+	if(p==NULL)
+		return 0;
+	else
+	{
+		p->level=1;
+		EnQueue(&Q,p);
+		while(!IsEmpty(&Q))
+		{
+			deQueue(&Q,&p);
+			if(p->level==k&&!p->lchild&&!p->rchild)  ///if(p->level==k)////第k 层的节点 
+				n++;
+			if(p->lchild&&p->level<k)
+			{
+				p->lchild->level=p->level+1;
+				EnQueue(&Q,p->lchild);
+			} 		
+			if(p->rchild&&p->level<k)
+			{
+				p->rchild->level=p->level+1;
+				EnQueue(&Q,p->rchild);
+			} 
+		
+		}	
+	}
+	return n;
+	
+}
+main()
+{
+	bitree root;
+	root=creat();
+	int k,b;
+	scanf("%d",&k);
+	b=treelevelleaf(root,k); 
+	printf("%d",b);
+}

@@ -1,0 +1,161 @@
+/*数据结构chapter6
+   二叉树的非递归遍历
+*/
+
+
+#include<stdio.h>
+#include<stdlib.h>
+#define true 1
+#define false 0 
+#define stacksize 100
+typedef struct Node
+{
+	char data;
+	struct Node *lchild;
+	struct Node *rchild;
+}bitNode,*bitree;
+
+typedef bitNode * ElemType;
+typedef struct
+{
+	ElemType elem[stacksize];
+	int top;
+}seqstack;
+void initstack(seqstack *s)
+{
+	s->top=-1;
+} 
+int stackempty(seqstack *s)
+{
+	if(s->top==-1)
+		return true;
+	else
+		return false; 
+}
+int push(seqstack *s,ElemType x)
+{
+	if(s->top==stacksize-1)
+		return false;
+	s->top++;
+	s->elem[s->top]=x;
+	return true; 
+}
+int pop(seqstack *s,ElemType *e)
+{
+	if(s->top==-1)
+		return false;
+	*e=s->elem[s->top];
+	s->top--;
+	return true; 
+}
+int gettop(seqstack *s,ElemType *e)
+{
+	if(s->top==-1)
+		return false;
+	*e=s->elem[s->top];
+	return true;
+}
+
+
+bitree creat()	//创建 
+{
+	char ch;
+	bitNode *s;
+	ch=getchar();
+	if(ch=='#')
+		return NULL;
+	else
+		{
+			s=(bitNode *)malloc(sizeof(bitNode));
+			s->data=ch;
+			s->lchild=creat();
+			s->rchild=creat();
+			return s;
+		}
+}
+void preorder(bitree root)				//非递归先序 
+{
+	seqstack s;
+	bitNode *p;
+	initstack(&s);
+	p=root;
+	while(p || !stackempty(&s))
+	{
+		if(p)
+		{
+			printf("%c",p->data);
+			push(&s,p);
+			p=p->lchild;
+			
+		}
+		else
+		{
+			pop(&s,&p);
+			p=p->rchild;
+		}
+	
+	} 
+}
+void inorder(bitree root)				//非递归中序 
+{
+	seqstack s;
+	bitNode *p;
+	initstack(&s);
+	p=root;
+	while(p || !stackempty(&s))
+	{
+		if(p)
+		{
+			push(&s,p);
+			p=p->lchild;
+			
+		}
+		else
+		{
+			pop(&s,&p);
+			printf("%c",p->data);
+			p=p->rchild;
+		}
+	
+	} 
+}
+void postorder(bitree root)				//非递归后序 
+{
+	seqstack s;
+	bitNode *p,*q;
+	initstack(&s);
+	p=root;
+	q=NULL;
+	while(p||!stackempty(&s))
+	{
+		if(p)
+		{
+			push(&s,p);
+			p=p->lchild;
+		}
+		else
+		{
+			gettop(&s,&p);
+			if(p->rchild==NULL||p->rchild==q)
+			{
+				pop(&s,&p);
+				printf("%c",p->data);
+				q=p;
+				p=NULL;
+			}
+			else
+				p=p->rchild;
+		}
+	}
+}
+main()
+{
+	bitree root;
+	root=creat();
+	printf("先序：") ; 
+	preorder(root);
+	printf("\n中序：");
+	inorder(root);
+	printf("\n后序:");
+	postorder(root);
+}

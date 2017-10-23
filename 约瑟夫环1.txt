@@ -1,0 +1,105 @@
+/*
+编号为1，2，…，n的n个人按顺时针方向围坐在一张圆桌周围，每人持有一个密码（正整数）。一 
+
+开始任选一个正整数m作为报数上限值，从第一个人开始按顺时针方向自1开始报数，报到m时停止报数，报m的那 
+
+个人出列，将他的密码作为新的m值，从他顺时针方向的下一个人开始重新从1报数，数到m的那个人又出列；如 
+
+此下去，直至圆桌周围的人全部出列为止。要求按出列顺序输出n个人的编号。 
+
+输入
+
+
+第一行输入两个整数，依次表示人数n和初始化密码m，以空格间隔。 
+
+第二行依次输入n个整数，分别表示n个人的密码，以空格间隔。 
+*/
+
+#include<stdio.h>
+#include<stdlib.h>
+#define MAX 100
+
+typedef struct NodeType
+{
+	int id;
+	int password;
+	struct NodeType *next;
+}NodeType;
+NodeType *GetNode(int iId,int ipassword)
+{
+	NodeType *pNew=NULL;
+	pNew=(NodeType *)malloc(sizeof(NodeType));
+	if(!pNew)
+		exit(-1);
+	pNew->id=iId;
+	pNew->password=ipassword;
+	pNew->next=NULL;
+	return pNew;
+}
+
+void Creatlist(NodeType **ppHead,int n)
+{
+	int i=0;
+	int ipassword=0;
+	NodeType *pNew=NULL;
+	NodeType *pCur=NULL;
+	for(i=1;i<=n;i++)
+	{
+		scanf("%d",&ipassword);
+		pNew=GetNode(i,ipassword);
+		if(*ppHead==NULL)
+		{
+			*ppHead=pCur=pNew;
+			pCur->next=*ppHead;
+		}
+		else
+		{
+			pNew->next=pCur->next;
+			pCur->next=pNew;
+			pCur=pNew;
+		}
+	}
+	
+} 
+
+void operate(NodeType **ppHead,int ipassword)
+{
+	int icounter=0;
+	int iflag=1;
+	NodeType *pPrv=NULL;
+	NodeType *pCur=NULL;
+	NodeType *pDel=NULL;
+	pPrv=pCur=*ppHead;
+	while(pPrv->next!=*ppHead)
+		pPrv=pPrv->next;
+	while(iflag)
+	{
+		for(icounter=1;icounter<ipassword;icounter++)
+		{
+			pPrv=pCur;
+			pCur=pCur->next;
+		}
+		if(pPrv==pCur)
+		iflag=0;
+		pDel=pCur;
+		pPrv->next=pCur->next;
+		pCur=pCur->next;
+		ipassword=pDel->password;
+		printf("%d ",pDel->id);
+		free(pDel);
+	}
+	*ppHead=NULL;
+	getchar();
+}
+main()
+{
+	int n=0;
+	int m=0;
+	NodeType *pHead = NULL;
+	do{
+		scanf("%d %d",&n,&m);
+	}while(n>MAX);
+	Creatlist(&pHead,n);
+	operate(&pHead,m);
+
+}

@@ -1,0 +1,146 @@
+#include<stdio.h>
+#include<stdlib.h>
+#define MAXSIZE 100
+typedef struct Node
+{
+	char data;
+	struct Node *lchild;
+	struct Node *rchild;
+}bitNode,*bitree;
+bitree creat()	//创建 
+{
+	char ch;
+	bitNode *s;
+	ch=getchar();
+	if(ch=='#')
+		return NULL;
+	else
+		{
+			s=(bitNode *)malloc(sizeof(bitNode));
+			s->data=ch;
+			s->lchild=creat();
+			s->rchild=creat();
+			return s;
+		}
+}
+void outputj(bitree root)				//输出节点 
+{
+	if(root!=NULL)
+	{
+		printf("%c",root->data);
+		outputj(root->lchild);
+		outputj(root->rchild);
+	}
+}
+void outputy(bitree root)				//输出叶子节点中序 
+{
+	if(root!=NULL)
+	{
+		outputy(root->lchild);
+		if(root->lchild==NULL&&root->rchild==NULL)
+			printf("%c",root->data);
+		outputy(root->rchild);
+	}
+} 
+void printTree(bitree root,int nlayer)			//桉树状形状打印二叉树 
+{
+	if(root!=NULL)
+	{
+		printTree(root->rchild,nlayer+1);
+		for(int i=0;i<nlayer;i++)
+			printf("  ");
+		printf("%c\n",root->data);
+		printTree(root->lchild,nlayer+1);
+	} 
+} 
+
+void preorder(bitree root)		//先序输出 
+{
+	if(root)
+	{
+		printf("%c",root->data);
+		preorder(root->lchild);
+		preorder(root->rchild);
+	}
+}
+void inorder(bitree root)		//中序输出 
+{
+	if(root)
+	{
+		
+		inorder(root->lchild);
+		printf("%c",root->data);
+		inorder(root->rchild);
+	}
+}
+void postorder(bitree root)		//后序输出 
+{
+	if(root)
+	{
+		
+		postorder(root->lchild);
+		postorder(root->rchild);
+		printf("%c",root->data);
+	}
+}
+int count=0;
+int leafnumber(bitree root)				//统计叶子节点的个数 
+{
+	if(root!=NULL)
+	{
+		if(root->lchild==NULL&&root->rchild==NULL)
+			count++;
+		leafnumber(root->lchild);
+		leafnumber(root->rchild);
+	}
+	return count;
+}
+void lbpath(bitree bt,char path[],int pathlen)			//输出从叶子节点到根的路径 
+{
+	int i;
+	if(bt!=NULL)
+	{
+		if(bt->lchild==NULL&&bt->rchild==NULL)
+		{
+			printf("%c",bt->data);
+			for(i=pathlen-1;i>=0;i--)
+				printf("%c",path[i]);
+			printf("\n"); 
+		}
+		else
+		{
+			path[pathlen]=bt->data;
+			lbpath(bt->lchild,path,pathlen+1);
+			lbpath(bt->rchild,path,pathlen+1);
+		}
+	} 
+}
+
+main()
+{
+	int h,l;
+	bitree root;
+	root=creat();
+//	outputj(root);
+//	printf("\n");
+	printf("输出叶子节点\n");
+	outputy(root);
+	printf("\n");
+	printf("\n");
+	scanf("%d",&h);
+	printf("桉树状形状打印\n");
+	printTree(root,h);
+	printf("先序："); 
+	preorder(root);
+	printf("\n中序:");
+	inorder(root);
+	printf("\n后序：");
+	postorder(root); 
+	l=leafnumber(root);
+	printf("\n输出叶子节点个数：\n");
+	printf("%d",l);
+	char path[MAXSIZE];
+	printf("\n从叶子节点到根节点的路径\n"); 
+	lbpath(root,path,0);
+	
+}
