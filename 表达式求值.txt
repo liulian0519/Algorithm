@@ -21,7 +21,7 @@ unsigned char Prior[8][8]=
 	
 };
 typedef struct stackchar
-{
+{   
 	char c;
 	struct stackchar *next;
 }SC;
