@@ -11,7 +11,7 @@ void dfs(int t)
 			for(int i=1;i<=bestcount;i++)
 			{
 				temp2[i]=temp1[i];
-			}
+			}   
 		}
 		return;
 	}
