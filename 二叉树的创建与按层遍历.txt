@@ -1,0 +1,94 @@
+/*二叉树的创建与按层便利*/
+
+#include<stdio.h>
+#include<stdlib.h>
+#define MAXSIZE 100
+#define true 1
+#define false 0
+typedef struct Node
+{
+	char data;
+	struct Node *lchild;
+	struct Node *rchild;
+}bitNode,*bitree;
+typedef bitNode *ElemType;
+typedef struct 
+{
+	ElemType elem[MAXSIZE];
+	int front;
+	int rear;
+}SeqQueue;
+void initQueue(SeqQueue *q)
+{
+	q->front = 0;
+	q->rear = 0;
+}
+int IsEmpty(SeqQueue *q)
+{
+	if(q->front == q->rear)
+		return true;
+	return false;
+}
+int EnQueue(SeqQueue *q,ElemType x)  
+{
+	if((q->rear+1)%MAXSIZE==q->front)
+		return false;
+	else
+	{	
+		q->elem[q->rear]=x;
+		q->rear=(q->rear+1)%MAXSIZE;
+		return true;
+	} 
+
+}
+int deQueue(SeqQueue *q,ElemType *e)
+{
+	if(q->front == q->rear)
+		return false;
+	*e = q->elem[q->front];
+	q->front = (q->front+1)%MAXSIZE;
+	return true;
+
+}
+bitree creat()	//创建 
+{
+	char ch;
+	bitNode *s;
+	ch=getchar();
+	if(ch=='#')
+		return NULL;
+	else
+		{
+			s=(bitNode *)malloc(sizeof(bitNode));
+			s->data=ch;
+			s->lchild=creat();
+			s->rchild=creat();
+			return s;
+		}
+}
+void layerorder(bitree root)		//按层便利 
+{
+	SeqQueue Q;
+	
+	bitNode *p;
+	initQueue(&Q);
+	p=root;
+	if(p==NULL)
+		return;
+	EnQueue(&Q,p);
+	while(!IsEmpty(&Q))
+	{
+		deQueue(&Q,&p);
+		printf("%c",p->data);
+		if(p->lchild)
+			EnQueue(&Q,p->lchild);
+		if(p->rchild)
+			EnQueue(&Q,p->rchild); 
+	} 
+}
+main()
+{
+	bitree root;
+	root=creat();
+	layerorder(root);
+}
